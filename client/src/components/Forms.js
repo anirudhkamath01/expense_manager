@@ -1,13 +1,27 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import List from "./List";
+import {
+  useAddTransactionMutation,
+  useGetLabelsQuery,
+} from "../store/apiSlice";
 
 export default function Forms() {
-  const { register, handleSubmit } = useForm();
+  const { register, handleSubmit, reset } = useForm();
+  const [addTransaction] = useAddTransactionMutation();
 
-  const onSubmit = (data) => {
-    console.log(data);
+  const { data: labelsData, refetch: refetchLabels } = useGetLabelsQuery(); // Destructure refetchLabels
+
+  const onSubmit = async (data) => {
+    if (!data) return;
+    await addTransaction(data).unwrap();
+    reset();
+    refetchLabels(); // Manually refetch the labels data
   };
+
+  useEffect(() => {
+    refetchLabels(); // Initial fetch of labels data
+  }, [refetchLabels]);
 
   return (
     <div className="form max-w-sm mx-auto w-96">
@@ -39,7 +53,7 @@ export default function Forms() {
             />
           </div>
           <div className="submit-btn">
-            <button className="border py-2 text-white bg-indigo-500 w-full">
+            <button className="border py-2 text-white bg-[#64403E] w-full">
               Make Transaction
             </button>
           </div>
