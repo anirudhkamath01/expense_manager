@@ -1,5 +1,7 @@
 import _ from "lodash";
 
+// Calculates the sum of transaction amounts based on type
+// If type is not provided, returns the total sum of all amounts
 export function getSum(transaction, type) {
   let sum = _(transaction)
     .groupBy("type")
@@ -15,6 +17,7 @@ export function getSum(transaction, type) {
   return sum;
 }
 
+// Calculates the percentage of each transaction type relative to the total sum
 export function getLabels(transaction) {
   let amountSum = getSum(transaction, "type");
   let Total = _.sum(getSum(transaction));
@@ -25,10 +28,11 @@ export function getLabels(transaction) {
   return percent;
 }
 
-export function chartData(transaction, custom) {
+// Generates the configuration object for the chart component
+export function chartData(transaction, monthIndex) {
   let bg = _.map(transaction, (a) => a.color);
   bg = _.uniq(bg);
-  console.log(bg);
+
   let dataValue = getSum(transaction);
 
   const config = {
@@ -48,9 +52,10 @@ export function chartData(transaction, custom) {
       cutout: 114,
     },
   };
-  return custom ?? config;
+  return config;
 }
 
+// Calculates the total sum of all transaction amounts
 export function getTotal(transaction) {
   return _.sum(getSum(transaction));
 }

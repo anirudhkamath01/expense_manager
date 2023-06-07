@@ -1,10 +1,13 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
+// Define the base URI for the API
 const baseURI = "http://localhost:8080";
 
+// Create the API slice using createApi
 export const apiSlice = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: baseURI }),
   endpoints: (builder) => ({
+    // Define the API endpoints here
     getCategories: builder.query({
       query: () => "/api/categories",
       provideTags: ["categories"],
@@ -32,6 +35,7 @@ export const apiSlice = createApi({
   }),
 });
 
+// Export the generated hooks for each API endpoint
 export const {
   useGetCategoriesQuery,
   useGetLabelsQuery,

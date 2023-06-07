@@ -98,6 +98,7 @@ async function getLabels(req, res) {
         {},
         {
           _id: v._id,
+          date: v.date,
           name: v.name,
           type: v.type,
           amount: v.amount,

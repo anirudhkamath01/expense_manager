@@ -7,14 +7,20 @@ import { useGetLabelsQuery } from "../store/apiSlice";
 
 Chart.register(ArcElement);
 
-export default function Graph() {
+export default function Graph({ monthIndex }) {
+  // Fetching data using a custom hook
   const { data, isFetching, isSuccess, isError } = useGetLabelsQuery();
+  const filteredTransactions = data.filter(
+    (item) => new Date(item.date).getMonth() === monthIndex
+  );
+
   let graphData;
 
   if (isFetching) {
     graphData = <div>Fetching</div>;
   } else if (isSuccess) {
-    graphData = <Doughnut {...chartData(data)} />;
+    // Render the Doughnut chart with filtered data
+    graphData = <Doughnut {...chartData(filteredTransactions)} />;
   } else if (isError) {
     graphData = <div>Error</div>;
   }
@@ -24,16 +30,18 @@ export default function Graph() {
       <div className="item">
         <div className="chart relative">
           {graphData}
-          <h3 className="mb-4 font-bold title">
-            Total
-            <span className="block text-3xl text-emerald-400">
-              ${getTotal(data) ?? 0}
-            </span>
-          </h3>
+          {isSuccess && (
+            <h3 className="mb-4 font-bold title">
+              Total
+              <span className="block text-3xl text-emerald-400">
+                ${getTotal(filteredTransactions) ?? 0}
+              </span>
+            </h3>
+          )}
         </div>
 
         <div className="flex flex-col py-10 gap-4">
-          <Labels />
+          {isSuccess && <Labels monthIndex={monthIndex} />}
         </div>
       </div>
     </div>
