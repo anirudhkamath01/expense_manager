@@ -18,18 +18,38 @@ export function getSum(transaction, type) {
 }
 
 // Calculates the percentage of each transaction type relative to the total sum
-export function getLabels(transaction) {
-  let amountSum = getSum(transaction, "type");
-  let Total = _.sum(getSum(transaction));
-  let percent = _(amountSum)
-    .map((objs) => _.assign(objs, { percent: (100 * objs.total) / Total }))
-    .value();
+export function getLabels(transaction, categoriesData) {
+  const amountSum = getSum(transaction, "type");
+  const Total = _.sum(getSum(transaction));
+
+  // Create a map to track existing categories
+  const categoryMap = _.keyBy(amountSum, "type");
+
+  // Iterate over categoriesData to include missing categories
+  const percent = categoriesData.map((category) => {
+    if (categoryMap[category.type]) {
+      // Calculate percentage for existing category
+      const percentage = (100 * categoryMap[category.type].total) / Total;
+      return {
+        ...categoryMap[category.type],
+        percent: percentage,
+      };
+    } else {
+      // Add missing category with 0 total and percentage
+      return {
+        type: category.type,
+        color: category.color,
+        total: 0,
+        percent: 0,
+      };
+    }
+  });
 
   return percent;
 }
 
 // Generates the configuration object for the chart component
-export function chartData(transaction, monthIndex) {
+export function chartData(transaction) {
   let bg = _.map(transaction, (a) => a.color);
   bg = _.uniq(bg);
 

@@ -10,17 +10,18 @@ Chart.register(ArcElement);
 export default function Graph({ monthIndex }) {
   // Fetching data using a custom hook
   const { data, isFetching, isSuccess, isError } = useGetLabelsQuery();
-  const filteredTransactions = data.filter(
-    (item) => new Date(item.date).getMonth() === monthIndex
-  );
-
   let graphData;
+  let filteredData;
 
   if (isFetching) {
     graphData = <div>Fetching</div>;
   } else if (isSuccess) {
     // Render the Doughnut chart with filtered data
-    graphData = <Doughnut {...chartData(filteredTransactions)} />;
+    filteredData = data.filter(
+      (item) => new Date(item.date).getMonth() === monthIndex
+    );
+    // Render the Doughnut chart with filtered data
+    graphData = <Doughnut {...chartData(filteredData)} />;
   } else if (isError) {
     graphData = <div>Error</div>;
   }
@@ -34,7 +35,7 @@ export default function Graph({ monthIndex }) {
             <h3 className="mb-4 font-bold title">
               Total
               <span className="block text-3xl text-emerald-400">
-                ${getTotal(filteredTransactions) ?? 0}
+                ${getTotal(filteredData) ?? 0}
               </span>
             </h3>
           )}

@@ -2,12 +2,13 @@ const { model } = require("mongoose");
 const { Categories, Transaction } = require("../models/model");
 
 async function createCategories(req, res) {
+  const { type, color } = req.body;
+
   try {
     const newCategory = await Categories.create({
-      type: "Investment",
-      color: "blue",
+      type,
+      color,
     });
-
     res.json(newCategory);
   } catch (error) {
     res

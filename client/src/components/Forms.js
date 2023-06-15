@@ -23,7 +23,7 @@ export default function Forms({
     reset(); // Reset the form fields
     refetchLabels(); // Manually refetch the labels data
   };
-  const { categoriesData } = useGetCategoriesQuery();
+  const { data: categoriesData } = useGetCategoriesQuery();
 
   return (
     <div className="form max-w-sm mx-auto w-96">
@@ -39,13 +39,15 @@ export default function Forms({
               className="form-input"
             />
           </div>
-          <select className="form-input" {...register("type")}>
-            <option value="Expense" defaultValue>
-              Expense
-            </option>
-            <option value="Investment">Investment</option>
-            <option value="Savings">Savings</option>
+          <select className="form-input" {...register("category")}>
+            {categoriesData &&
+              categoriesData.map((category, index) => (
+                <option key={index} value={category.type}>
+                  {category.type}
+                </option>
+              ))}
           </select>
+
           <div className="input-group">
             <input
               type="text"
