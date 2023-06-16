@@ -58,6 +58,8 @@ export default function List({ monthIndex, handlePrevMonth, handleNextMonth }) {
     Transactions = <div>Error</div>;
   }
 
+  console.log(labels);
+
   return (
     <div className="flex flex-col py-6 gap-3">
       <div className="flex font-bold items-center justify-between">

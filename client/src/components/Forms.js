@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import List from "./List";
 import {
@@ -12,18 +12,46 @@ export default function Forms({
   handlePrevMonth,
   handleNextMonth,
 }) {
-  const { register, handleSubmit, reset } = useForm(); // Initialize react-hook-form
-  const [addTransaction] = useAddTransactionMutation(); // Destructure the addTransaction mutation from the generated hook
+  const { register, handleSubmit, reset } = useForm();
+  const [addTransaction] = useAddTransactionMutation();
+  const { data, refetch: refetchLabels } = useGetLabelsQuery();
+  const { data: categoriesData } = useGetCategoriesQuery();
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [isRefundable, setIsRefundable] = useState(false);
 
-  const { data, refetch: refetchLabels } = useGetLabelsQuery(); // Destructure the data and refetchLabels from the useGetLabelsQuery hook
+  useEffect(() => {
+    if (categoriesData && categoriesData.length > 0) {
+      setSelectedCategory(categoriesData[0].type);
+    }
+  }, [categoriesData]);
 
   const onSubmit = async (data) => {
-    if (!data) return; // Check if form data exists
-    await addTransaction(data).unwrap(); // Call the addTransaction mutation and unwrap the result
-    reset(); // Reset the form fields
-    refetchLabels(); // Manually refetch the labels data
+    if (!data) return;
+
+    const transactionData = {
+      ...data,
+      category: selectedCategory,
+      isRefundable: Boolean(isRefundable),
+    };
+
+    try {
+      console.log("transactionData:", transactionData);
+      await addTransaction(transactionData).unwrap();
+      reset();
+      refetchLabels();
+    } catch (error) {
+      console.error("Error creating transaction:", error);
+      // Handle error
+    }
   };
-  const { data: categoriesData } = useGetCategoriesQuery();
+
+  const handleCategoryChange = (e) => {
+    setSelectedCategory(e.target.value);
+  };
+
+  const handleRefundableChange = () => {
+    setIsRefundable(!isRefundable);
+  };
 
   return (
     <div className="form max-w-sm mx-auto w-96">
@@ -34,12 +62,17 @@ export default function Forms({
           <div className="input-group">
             <input
               type="text"
-              {...register("name")} // Register the "name" field with react-hook-form
-              placeholder="Salary, House Rent"
+              {...register("name")}
+              placeholder="Salary, Rent, Etc."
               className="form-input"
             />
           </div>
-          <select className="form-input" {...register("category")}>
+          <select
+            className="form-input"
+            {...register("category")}
+            value={selectedCategory}
+            onChange={handleCategoryChange}
+          >
             {categoriesData &&
               categoriesData.map((category, index) => (
                 <option key={index} value={category.type}>
@@ -51,13 +84,27 @@ export default function Forms({
           <div className="input-group">
             <input
               type="text"
-              placeholder="($)Amount"
+              placeholder="($) Amount"
               className="form-input"
-              {...register("amount")} // Register the "amount" field with react-hook-form
+              {...register("amount")}
             />
           </div>
+          <div className="flex items-center mb-2">
+            <input
+              type="checkbox"
+              checked={isRefundable}
+              onChange={handleRefundableChange}
+              className="ml-2 w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+            />
+            <label
+              htmlFor="default-checkbox"
+              className="ml-2 font-medium text-black"
+            >
+              Refundable
+            </label>
+          </div>
           <div className="submit-btn">
-            <button className="border py-2 text-white bg-[#64403E] w-full">
+            <button className="border py-2 text-white bg-[#54C960] w-full">
               Make Transaction
             </button>
           </div>

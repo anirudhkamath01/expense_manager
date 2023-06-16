@@ -17,6 +17,19 @@ async function createCategories(req, res) {
   }
 }
 
+async function deleteCategory(req, res) {
+  if (!req.body) {
+    return res.status(400).json({ message: "Request body not found" });
+  }
+
+  try {
+    await Categories.deleteOne(req.body);
+    res.json("Record Deleted...");
+  } catch (error) {
+    res.status(400).json({ message: "Error while deleting Category Record" });
+  }
+}
+
 async function getCategories(req, res) {
   try {
     const data = await Categories.find({});
@@ -39,13 +52,14 @@ async function createTransaction(req, res) {
     return res.status(400).json("Post HTTP Data not provided");
   }
 
-  const { name, type, amount } = req.body;
+  const { name, category, amount, isRefundable } = req.body;
 
   const create = new Transaction({
     name,
-    type,
+    type: category,
     amount,
     date: new Date(),
+    isRefundable: isRefundable || false, // Set isRefundable to the provided value or default to false if not provided
   });
 
   try {
@@ -104,6 +118,7 @@ async function getLabels(req, res) {
           type: v.type,
           amount: v.amount,
           color: v.categories_info["color"],
+          isRefundable: v.isRefundable,
         }
       )
     );
@@ -122,4 +137,5 @@ module.exports = {
   getTransaction,
   deleteTransaction,
   getLabels,
+  deleteCategory,
 };

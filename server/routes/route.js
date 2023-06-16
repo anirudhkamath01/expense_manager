@@ -5,8 +5,8 @@ const controller = require("../controller/controller");
 router
   .route("/api/categories")
   .post(controller.createCategories)
-  .get(controller.getCategories);
-
+  .get(controller.getCategories)
+  .delete(controller.deleteCategory);
 router
   .route("/api/transaction")
   .post(controller.createTransaction)

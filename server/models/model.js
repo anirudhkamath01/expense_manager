@@ -10,6 +10,7 @@ const transaction_model = new Schema({
   type: { type: String, default: "Investment" },
   amount: { type: Number },
   date: { type: Date, default: Date.now },
+  isRefundable: { type: Boolean, default: false },
 });
 
 const Categories = mongoose.model("categories", categories_model);

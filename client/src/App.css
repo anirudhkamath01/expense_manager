@@ -5,8 +5,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
 
 :root {
-  --color-yellow: ##E8D33F
+  --color-yellow: ##E8D33F;
   --color-purple: ##973594
+  
   
 }
 
@@ -39,4 +40,11 @@
   background-position: right 20px center; /* Adjust the value as needed */
 }
 
+.add-button {
+  @apply px-4 py-2 border text-black rounded-md shadow-md mt-4;
+}
+
+.cancel-button {
+  @apply px-4 py-2 bg-red-500 text-white rounded-md mr-2 shadow-md;
+}
 

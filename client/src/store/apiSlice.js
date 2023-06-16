@@ -20,6 +20,13 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: ["category"],
     }),
+    deleteCategory: builder.mutation({
+      query: (categoryId) => ({
+        url: "/api/categories",
+        method: "DELETE",
+        body: categoryId, // Pass only the category ID
+      }),
+    }),
     getLabels: builder.query({
       query: () => "/api/labels",
       provideTags: ["transaction"],
@@ -50,4 +57,5 @@ export const {
   useAddTransactionMutation,
   useDeleteTransactionMutation,
   useAddCategoryMutation,
+  useDeleteCategoryMutation,
 } = apiSlice;

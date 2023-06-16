@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import {
   useAddCategoryMutation,
+  useDeleteCategoryMutation,
   useGetCategoriesQuery,
   useGetLabelsQuery,
 } from "../store/apiSlice";
@@ -9,6 +10,7 @@ import ControlPointIcon from "@mui/icons-material/ControlPoint";
 
 export default function Labels({ monthIndex }) {
   const { data, isFetching, isSuccess, isError } = useGetLabelsQuery();
+  const [deleteCategory] = useDeleteCategoryMutation();
   const { data: categoriesData = [], refetch: refetchLabels } =
     useGetCategoriesQuery();
   const [addCategoryMutation] = useAddCategoryMutation();
@@ -44,20 +46,30 @@ export default function Labels({ monthIndex }) {
   const handleAddLabel = async (e) => {
     e.preventDefault();
 
+    // Check if the category name is a blank string
+    if (!categoryName || categoryName.trim() === "") {
+      // Handle the error, display a message, or prevent label creation
+      console.log("Category name cannot be blank");
+      return;
+    }
+
+    // Check if a color is selected
+    if (!selectedColor) {
+      // Handle the error, display a message, or prevent label creation
+      console.log("A color must be selected");
+      return;
+    }
+
     const categoryData = { type: categoryName, color: selectedColor };
 
     try {
       await addCategoryMutation(categoryData);
       refetchLabels();
-
-      // Manually refetch the labels data to update the labels component
-      // The useGetLabelsQuery hook will automatically handle the refetch
     } catch (error) {
       console.error("Error creating category:", error);
       // Handle error
     }
 
-    // Reset form inputs and hide the form
     setCategoryName("");
     setSelectedColor("");
     setShowForm(false);
@@ -71,9 +83,13 @@ export default function Labels({ monthIndex }) {
     const filteredLabels = data.filter(
       (category) => new Date(category.date).getMonth() === monthIndex
     );
-    // Generate label components for each label object
     Transactions = getLabels(filteredLabels, categoriesData).map((v, i) => (
-      <LabelComponent key={i} data={v} />
+      <LabelComponent
+        key={i}
+        data={v}
+        deleteCategory={deleteCategory}
+        refetchLabels={refetchLabels}
+      />
     ));
   } else if (isError) {
     Transactions = <div>Error</div>;
@@ -83,28 +99,39 @@ export default function Labels({ monthIndex }) {
     <>
       {Transactions}
       {showForm ? (
-        <form onSubmit={handleAddLabel}>
-          <input
-            type="text"
-            value={categoryName}
-            onChange={handleCategoryNameChange}
-            placeholder="Category name"
-          />
-          <select value={selectedColor} onChange={handleColorChange}>
-            <option value="">Select color</option>
-            {colors.map((color) => (
-              <option key={color} value={color}>
-                {color}
-              </option>
-            ))}
-          </select>
-          <button type="submit">Add</button>
-          <button onClick={handleToggleForm}>Cancel</button>
-        </form>
+        <div>
+          <form onSubmit={handleAddLabel}>
+            <input
+              type="text"
+              value={categoryName}
+              onChange={handleCategoryNameChange}
+              placeholder="Category"
+              className="form-input"
+            />
+            <select
+              value={selectedColor}
+              onChange={handleColorChange}
+              className="form-input"
+            >
+              <option value="">Select color</option>
+              {colors.map((color) => (
+                <option key={color} value={color}>
+                  {color}
+                </option>
+              ))}
+            </select>
+            <button onClick={handleToggleForm} className="cancel-button">
+              Cancel
+            </button>
+            <button type="submit" className="add-button">
+              Add
+            </button>
+          </form>
+        </div>
       ) : (
         <button
           onClick={handleToggleForm}
-          className="rounded-full p-2 border border-gray-300 hover:bg-gray-100 hover:shadow-none"
+          className="border border-dashed p-2 hover:bg-gray-100"
         >
           <ControlPointIcon />
         </button>
@@ -113,23 +140,37 @@ export default function Labels({ monthIndex }) {
   );
 }
 
-function LabelComponent({ data }) {
+function LabelComponent({ data, deleteCategory, refetchLabels }) {
+  const handleButtonClick = async (e) => {
+    const id = e.currentTarget.dataset.id; // Use currentTarget instead of target
+    console.log(id);
+    if (!id) return;
+    await deleteCategory({ type: id });
+    refetchLabels();
+  };
+
   if (!data) {
     return <></>;
   }
   return (
     <div className="labels flex justify-between">
       <div className="flex gap-2">
-        {/* Render the colored box */}
         <div
           className="w-2 h-2 rounded py-3"
           style={{ background: data.color ?? "#f9c74f" }}
         ></div>
-        {/* Render the label type */}
         <h3 className="text-md">{data.type ?? ""}</h3>
       </div>
-      {/* Render the percentage */}
-      <h3 className="font-bold">{Math.round(data.percent) ?? 0}%</h3>
+      <div className="flex">
+        <h3 className="font-bold mr-4">{Math.round(data.percent) ?? 0}%</h3>
+        <button
+          data-id={data.type}
+          className="px-3"
+          onClick={handleButtonClick}
+        >
+          <box-icon size="20px" color="grey" name="trash" />
+        </button>
+      </div>
     </div>
   );
 }
