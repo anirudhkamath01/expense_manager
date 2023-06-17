@@ -16,7 +16,7 @@ export default function Forms({
 }) {
   const { register, handleSubmit, reset } = useForm();
   const [addTransaction] = useAddTransactionMutation();
-  const { data, refetch: refetchLabels } = useGetLabelsQuery();
+  const { refetch: refetchLabels } = useGetLabelsQuery();
   const { data: categoriesData } = useGetCategoriesQuery();
   const [selectedCategory, setSelectedCategory] = useState("");
   const [isRefundable, setIsRefundable] = useState(false);

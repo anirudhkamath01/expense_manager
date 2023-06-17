@@ -20,7 +20,6 @@ export function getSum(transaction, type) {
 // Calculates the percentage of each transaction type relative to the total sum
 export function getLabels(transaction, categoriesData) {
   const amountSum = getSum(transaction, "type");
-  const Total = _.sum(getSum(transaction));
 
   // Create a map to track existing categories
   const categoryMap = _.keyBy(amountSum, "type");

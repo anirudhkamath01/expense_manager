@@ -1,6 +1,5 @@
 import { useGetLabelsQuery } from "../store/apiSlice";
 
-
 export default function RefundList() {
   const { data: labels, isFetching, isSuccess, isError } = useGetLabelsQuery();
 

@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import "boxicons";
 import { useDeleteTransactionMutation } from "../store/apiSlice";
 import { useGetLabelsQuery } from "../store/apiSlice";
