@@ -26,13 +26,13 @@ export function getLabels(transaction, categoriesData) {
   const categoryMap = _.keyBy(amountSum, "type");
 
   // Iterate over categoriesData to include missing categories
-  const percent = categoriesData.map((category) => {
+  const expenseTotal = categoriesData.map((category) => {
     if (categoryMap[category.type]) {
       // Calculate percentage for existing category
-      const percentage = (100 * categoryMap[category.type].total) / Total;
+      const total = categoryMap[category.type].total;
       return {
         ...categoryMap[category.type],
-        percent: percentage,
+        expenseTotal: total,
       };
     } else {
       // Add missing category with 0 total and percentage
@@ -40,12 +40,12 @@ export function getLabels(transaction, categoriesData) {
         type: category.type,
         color: category.color,
         total: 0,
-        percent: 0,
+        expenseTotal: 0,
       };
     }
   });
 
-  return percent;
+  return expenseTotal;
 }
 
 // Generates the configuration object for the chart component
@@ -77,5 +77,6 @@ export function chartData(transaction) {
 
 // Calculates the total sum of all transaction amounts
 export function getTotal(transaction) {
-  return _.sum(getSum(transaction));
+  const sum = _.sum(getSum(transaction));
+  return sum.toFixed(2);
 }

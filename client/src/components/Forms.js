@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import List from "./List";
 import {
   useAddTransactionMutation,
@@ -18,6 +20,7 @@ export default function Forms({
   const { data: categoriesData } = useGetCategoriesQuery();
   const [selectedCategory, setSelectedCategory] = useState("");
   const [isRefundable, setIsRefundable] = useState(false);
+  const [startDate, setStartDate] = useState(new Date());
 
   useEffect(() => {
     if (categoriesData && categoriesData.length > 0) {
@@ -32,6 +35,7 @@ export default function Forms({
       ...data,
       category: selectedCategory,
       isRefundable: Boolean(isRefundable),
+      date: startDate.toISOString(),
     };
 
     try {
@@ -87,6 +91,10 @@ export default function Forms({
               placeholder="($) Amount"
               className="form-input"
               {...register("amount")}
+              onChange={(e) => {
+                const value = e.target.value.replace("$", "");
+                e.target.value = value;
+              }}
             />
           </div>
           <div className="flex items-center mb-2">
@@ -102,6 +110,15 @@ export default function Forms({
             >
               Refundable
             </label>
+          </div>
+          <div className="flex items-center mb-2">
+            <label className="ml-2 font-medium text-black">Date: </label>
+            <div className="ml-2">
+              <DatePicker
+                selected={startDate}
+                onChange={(date) => setStartDate(date)}
+              />
+            </div>
           </div>
           <div className="submit-btn">
             <button className="border py-2 text-white bg-[#54C960] w-full">

@@ -18,16 +18,18 @@ export default function Labels({ monthIndex }) {
   const [categoryName, setCategoryName] = useState("");
   const [selectedColor, setSelectedColor] = useState("");
 
-  const colors = [
-    "red",
-    "pink",
-    "blue",
-    "orange",
-    "green",
-    "purple",
-    "yellow",
-    "gray",
-  ];
+  const colors = {
+    pink: "#FFB6C1",
+    lavender: "#E6E6FA",
+    blue: "#89CFF0",
+    green: "#98FF98",
+    lilac: "#C8A2C8",
+    peach: "#FFDAB9",
+    gray: "#C0C0C0",
+    coral: "#FF7F50",
+    turquoise: "#40E0D0",
+    mauve: "#E0B0FF",
+  };
 
   const handleToggleForm = () => {
     setShowForm(!showForm);
@@ -114,12 +116,13 @@ export default function Labels({ monthIndex }) {
               className="form-input"
             >
               <option value="">Select color</option>
-              {colors.map((color) => (
-                <option key={color} value={color}>
-                  {color}
+              {Object.keys(colors).map((colorKey) => (
+                <option key={colorKey} value={colors[colorKey]}>
+                  {colorKey}
                 </option>
               ))}
             </select>
+
             <button onClick={handleToggleForm} className="cancel-button">
               Cancel
             </button>
@@ -162,7 +165,7 @@ function LabelComponent({ data, deleteCategory, refetchLabels }) {
         <h3 className="text-md">{data.type ?? ""}</h3>
       </div>
       <div className="flex">
-        <h3 className="font-bold mr-4">{Math.round(data.percent) ?? 0}%</h3>
+        <h3 className="font-bold mr-4">${data.expenseTotal.toFixed(2) ?? 0}</h3>
         <button
           data-id={data.type}
           className="px-3"

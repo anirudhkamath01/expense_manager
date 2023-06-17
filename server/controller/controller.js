@@ -1,4 +1,3 @@
-const { model } = require("mongoose");
 const { Categories, Transaction } = require("../models/model");
 
 async function createCategories(req, res) {
@@ -52,14 +51,14 @@ async function createTransaction(req, res) {
     return res.status(400).json("Post HTTP Data not provided");
   }
 
-  const { name, category, amount, isRefundable } = req.body;
+  const { name, category, amount, isRefundable, date } = req.body;
 
   const create = new Transaction({
     name,
     type: category,
     amount,
-    date: new Date(),
-    isRefundable: isRefundable || false, // Set isRefundable to the provided value or default to false if not provided
+    date: date, // Convert the provided date string to a Date object
+    isRefundable: isRefundable || false,
   });
 
   try {
