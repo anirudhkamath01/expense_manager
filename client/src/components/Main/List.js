@@ -4,11 +4,11 @@ import {
   useDeleteTransactionMutation,
   useUpdateTransactionMutation,
   useGetCategoriesQuery,
-} from "../store/apiSlice";
-import { useGetLabelsQuery } from "../store/apiSlice";
+} from "../../store/apiSlice";
+import { useGetLabelsQuery } from "../../store/apiSlice";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import Transaction from "./Transaction";
+import Transaction from "../Transaction";
 
 export default function List({ monthIndex, handlePrevMonth, handleNextMonth }) {
   // Fetch labels data and manage loading and error states

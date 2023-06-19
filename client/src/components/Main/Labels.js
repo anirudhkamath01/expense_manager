@@ -4,8 +4,8 @@ import {
   useDeleteCategoryMutation,
   useGetCategoriesQuery,
   useGetLabelsQuery,
-} from "../store/apiSlice";
-import { getLabels } from "../helper/helper";
+} from "../../store/apiSlice";
+import { getLabels } from "../../helper/helper";
 import ControlPointIcon from "@mui/icons-material/ControlPoint";
 
 export default function Labels({ monthIndex }) {

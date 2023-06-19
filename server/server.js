@@ -2,6 +2,9 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 
+const userRoutes = require("./routes/users");
+const authRoutes = require("./routes/auth");
+
 require("dotenv").config({ path: "./config.env" });
 const port = process.env.PORT || 5000;
 
@@ -28,3 +31,6 @@ con
   .catch((error) => {
     console.log(`Connection Failed...! ${error}`);
   });
+
+app.use("/api/users", userRoutes);
+app.use("/api/auth", authRoutes);

@@ -7,7 +7,7 @@ import {
   useAddTransactionMutation,
   useGetCategoriesQuery,
   useGetLabelsQuery,
-} from "../store/apiSlice";
+} from "../../store/apiSlice";
 
 export default function Forms({
   monthIndex,

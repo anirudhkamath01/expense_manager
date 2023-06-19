@@ -1,45 +1,26 @@
 import "./App.css";
-import Graph from "./components/Graph.js";
-import Forms from "./components/Forms";
-import { useState } from "react";
-import RefundList from "./components/RefundList";
+
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  Navigate,
+} from "react-router-dom";
+import Main from "./components/Main";
+import Login from "./components/Login";
+import Signup from "./components/Signup";
 
 export default function App() {
-  const [monthIndex, setMonthIndex] = useState(5);
-
-  const handlePrevMonth = () => {
-    if (monthIndex === 0) {
-      setMonthIndex(11);
-    } else {
-      setMonthIndex(monthIndex - 1);
-    }
-  };
-
-  const handleNextMonth = () => {
-    if (monthIndex === 11) {
-      setMonthIndex(0);
-    } else {
-      setMonthIndex(monthIndex + 1);
-    }
-  };
+  const user = localStorage.getItem("token");
 
   return (
-    <div className="App">
-      <div className="container mx-auto text-center text-gray-800">
-        <h1 className="text-4xl py-8 mb-10 bg-slate-800 text-white rounded-lg">
-          Expense Tracker
-        </h1>
-
-        <div className="grid lg:grid-cols-3 gap-7">
-          <Graph key={monthIndex} monthIndex={monthIndex} />
-          <Forms
-            monthIndex={monthIndex}
-            handlePrevMonth={handlePrevMonth}
-            handleNextMonth={handleNextMonth}
-          />
-          <RefundList />
-        </div>
-      </div>
-    </div>
+    <Router>
+      <Routes>
+        {user && <Route path="/" element={<Main />} />}
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/" element={<Navigate to="/login" replace />} />
+      </Routes>
+    </Router>
   );
 }
