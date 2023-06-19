@@ -92,7 +92,7 @@ export default function Forms({
               className="form-input"
               {...register("amount")}
               onChange={(e) => {
-                const value = e.target.value.replace("$", "");
+                const value = e.target.value.replace(/[^0-9.]/g, "");
                 e.target.value = value;
               }}
             />

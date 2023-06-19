@@ -71,6 +71,26 @@ async function createTransaction(req, res) {
   }
 }
 
+async function updateTransaction(req, res) {
+  const { id, amount, name, category } = req.body;
+
+  try {
+    const updatedTransaction = await Transaction.findByIdAndUpdate(
+      id,
+      { amount, name, type: category},
+      { new: true }
+    );
+
+    if (!updatedTransaction) {
+      return res.status(404).json({ message: "Transaction not found" });
+    }
+
+    res.json(updatedTransaction);
+  } catch (error) {
+    res.status(400).json({ message: `Error while updating transaction: ${error}` });
+  }
+}
+
 async function getTransaction(req, res) {
   let data = await Transaction.find({});
   return res.json(data);
@@ -137,4 +157,5 @@ module.exports = {
   deleteTransaction,
   getLabels,
   deleteCategory,
+  updateTransaction,
 };

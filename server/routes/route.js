@@ -11,7 +11,8 @@ router
   .route("/api/transaction")
   .post(controller.createTransaction)
   .get(controller.getTransaction)
-  .delete(controller.deleteTransaction);
+  .delete(controller.deleteTransaction)
+  .put(controller.updateTransaction);
 
 router.route("/api/labels").get(controller.getLabels);
 

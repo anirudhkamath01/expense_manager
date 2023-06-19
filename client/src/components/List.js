@@ -1,8 +1,14 @@
+import React, { useState } from "react";
 import "boxicons";
-import { useDeleteTransactionMutation } from "../store/apiSlice";
+import {
+  useDeleteTransactionMutation,
+  useUpdateTransactionMutation,
+  useGetCategoriesQuery,
+} from "../store/apiSlice";
 import { useGetLabelsQuery } from "../store/apiSlice";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import Transaction from "./Transaction";
 
 export default function List({ monthIndex, handlePrevMonth, handleNextMonth }) {
   // Fetch labels data and manage loading and error states
@@ -15,6 +21,12 @@ export default function List({ monthIndex, handlePrevMonth, handleNextMonth }) {
   } = useGetLabelsQuery();
 
   const [deleteTransaction] = useDeleteTransactionMutation();
+  const [updateTransaction] = useUpdateTransactionMutation();
+  const [editingTransactionId, setEditingTransactionId] = useState(null);
+  const [newName, setNewName] = useState("");
+  const [newAmount, setNewAmount] = useState("");
+  const [newCategory, setNewCategory] = useState("");
+  const { data: categoriesData } = useGetCategoriesQuery();
 
   var month = [
     "January",
@@ -32,10 +44,46 @@ export default function List({ monthIndex, handlePrevMonth, handleNextMonth }) {
   ];
 
   // Handle click event to delete a transaction and refetch labels data
-  const handlerClick = async (e) => {
-    if (!e.target.dataset.id) return;
-    await deleteTransaction({ _id: e.target.dataset.id });
+  const handleDeleteTransaction = async (transactionId) => {
+    await deleteTransaction({ _id: transactionId });
     refetch();
+  };
+
+  const handleEditTransaction = (transactionId) => {
+    setEditingTransactionId(transactionId);
+  };
+
+  const handleSaveTransaction = async (transactionId) => {
+    if (!newName || !newAmount || !newCategory) {
+      alert("Name and amount are required.");
+      return;
+    }
+
+    try {
+      const updatedTransaction = {
+        id: transactionId,
+        name: newName,
+        amount: newAmount,
+        category: newCategory,
+      };
+
+      const response = await updateTransaction(updatedTransaction);
+
+      if (response.error) {
+        console.error("Error updating transaction:", response.error);
+        return;
+      }
+
+      refetch();
+    } catch (error) {
+      console.error("Error updating transaction:", error);
+    }
+
+    setEditingTransactionId(null);
+  };
+
+  const handleCancelTransaction = () => {
+    setEditingTransactionId(null);
   };
 
   let Transactions;
@@ -49,15 +97,28 @@ export default function List({ monthIndex, handlePrevMonth, handleNextMonth }) {
 
     // Generate transaction components for each filtered label object
     Transactions = filteredLabels.map((v, i) => (
-      <Transaction key={i} category={v} handler={handlerClick} />
+      <Transaction
+        key={i}
+        category={v}
+        isEditing={v._id === editingTransactionId}
+        handleDeleteTransaction={handleDeleteTransaction}
+        handleEditTransaction={handleEditTransaction}
+        handleSaveTransaction={handleSaveTransaction}
+        handleCancelTransaction={handleCancelTransaction} // Pass the handleCancelTransaction prop
+        newName={newName}
+        setNewName={setNewName}
+        newAmount={newAmount}
+        setNewAmount={setNewAmount}
+        newCategory={newCategory}
+        setNewCategory={setNewCategory}
+        categoriesData={categoriesData}
+      />
     ));
   }
 
   if (isError) {
     Transactions = <div>Error</div>;
   }
-
-  console.log(labels);
 
   return (
     <div className="flex flex-col py-6 gap-3">
@@ -78,33 +139,6 @@ export default function List({ monthIndex, handlePrevMonth, handleNextMonth }) {
         />
       </div>
       {Transactions}
-    </div>
-  );
-}
-
-function Transaction({ category, handler }) {
-  // If category object is null or undefined, return null
-  if (!category) return null;
-
-  return (
-    <div
-      className="item flex bg-gray-50 py-2 rounded-r justify-between"
-      style={{ borderRight: `8px solid ${category.color ?? "red"}` }}
-    >
-      <button className="px-3" onClick={handler}>
-        <box-icon
-          data-id={category._id ?? ""}
-          size="15px"
-          color={category.color ?? "red"}
-          name="trash"
-        />
-      </button>
-      <div className="flex items-center w-full">
-        <span className="text-left flex-grow">{category.name ?? ""}</span>
-        <span className="text-right p-2 mr-3 rounded-lg text-slate-400">
-          ${category.amount}
-        </span>
-      </div>
     </div>
   );
 }

@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 // Define the base URI for the API
-const baseURI = "https://expense-tracker-erz6.onrender.com";
+const baseURI = "http://localhost:8080/";
 
 // Create the API slice using createApi
 export const apiSlice = createApi({
@@ -39,6 +39,16 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: ["transaction"],
     }),
+    updateTransaction: builder.mutation({
+      query: (newTransaction) => {
+        return {
+          url: `/api/transaction/`,
+          method: "PUT",
+          body: newTransaction,
+        };
+      },
+      invalidatesTags: ["transaction"],
+    }),
     deleteTransaction: builder.mutation({
       query: (recordID) => ({
         url: "/api/transaction",
@@ -58,4 +68,5 @@ export const {
   useDeleteTransactionMutation,
   useAddCategoryMutation,
   useDeleteCategoryMutation,
+  useUpdateTransactionMutation,
 } = apiSlice;
