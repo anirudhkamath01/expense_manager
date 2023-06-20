@@ -1,17 +1,31 @@
 import React from "react";
-import { Doughnut } from "react-chartjs-2";
-import { Chart, ArcElement } from "chart.js";
+import { Doughnut, Bar } from "react-chartjs-2";
+import {
+  Chart,
+  ArcElement,
+  CategoryScale,
+  LinearScale,
+  BarController,
+  BarElement,
+} from "chart.js";
 import Labels from "./Labels";
-import { chartData, getTotal } from "../../helper/helper";
+import { chartData, getTotal, barChart } from "../../helper/helper";
 import { useGetLabelsQuery } from "../../store/apiSlice";
 
-Chart.register(ArcElement);
+Chart.register(
+  ArcElement,
+  CategoryScale,
+  LinearScale,
+  BarController,
+  BarElement
+); // Register the necessary elements
 
 export default function Graph({ monthIndex }) {
   // Fetching data using a custom hook
   const { data, isFetching, isSuccess, isError } = useGetLabelsQuery();
   let graphData;
   let filteredData;
+  let barData;
 
   if (isFetching) {
     graphData = <div>Fetching</div>;
@@ -24,6 +38,7 @@ export default function Graph({ monthIndex }) {
     );
     // Render the Doughnut chart with filtered data
     graphData = <Doughnut {...chartData(filteredData)} />;
+    barData = barChart(data); // Get the bar chart data
   } else if (isError) {
     graphData = <div>Error</div>;
   }
@@ -45,6 +60,8 @@ export default function Graph({ monthIndex }) {
 
         <div className="flex flex-col py-10 gap-4">
           {isSuccess && <Labels monthIndex={monthIndex} />}
+          <h1>Expense Summary</h1>
+          {barData && <Bar data={barData} />} {/* Render the Bar chart */}
         </div>
       </div>
     </div>
