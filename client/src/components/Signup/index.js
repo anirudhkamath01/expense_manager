@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import styles from "./styles.module.css";
 
 const Signup = () => {
-  const baseURI = process.env.baseURI || "http://localhost:8080";
+  const baseURI = "https://expense-tracker-erz6.onrender.com";
   const [data, setData] = useState({
     firstName: "",
     lastName: "",
