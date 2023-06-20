@@ -94,7 +94,6 @@ export function barChart(transactions) {
   monthIndexes = _.uniq(monthIndexes);
   const labels = monthIndexes.map((index) => monthNames[index]);
   const values = getAmountSumsByMonth(transactions);
-  console.log(values);
   const data = {
     labels: labels,
     datasets: [

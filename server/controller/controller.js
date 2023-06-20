@@ -98,12 +98,12 @@ async function createTransaction(req, res) {
 }
 
 async function updateTransaction(req, res) {
-  const { _id, amount, name, category, userID } = req.body;
+  const { _id, amount, name, category } = req.body;
 
   try {
     const updatedTransaction = await Transaction.findByIdAndUpdate(
       { _id },
-      { amount, name, type: category, userID },
+      { amount, name, type: category },
       { new: true }
     );
 
@@ -113,9 +113,7 @@ async function updateTransaction(req, res) {
 
     res.json(updatedTransaction);
   } catch (error) {
-    res
-      .status(400)
-      .json({ message: `Error while updating transaction: ${error}` });
+    res.status(400).json({ message: error });
   }
 }
 

@@ -11,7 +11,6 @@ import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import Transaction from "../Transaction";
 
 export default function List({ monthIndex, handlePrevMonth, handleNextMonth }) {
-  // Fetch labels data and manage loading and error states
   const {
     data: labels,
     isFetching,
@@ -43,7 +42,6 @@ export default function List({ monthIndex, handlePrevMonth, handleNextMonth }) {
     "December",
   ];
 
-  // Handle click event to delete a transaction and refetch labels data
   const handleDeleteTransaction = async (transactionId) => {
     await deleteTransaction({ _id: transactionId });
     refetch();
@@ -55,17 +53,19 @@ export default function List({ monthIndex, handlePrevMonth, handleNextMonth }) {
 
   const handleSaveTransaction = async (transactionId) => {
     if (!newName || !newAmount || !newCategory) {
-      alert("Name and amount are required.");
+      alert("Name, amount, and category are required.");
       return;
     }
 
     try {
       const updatedTransaction = {
-        id: transactionId,
+        _id: transactionId,
         name: newName,
         amount: newAmount,
         category: newCategory,
       };
+
+      console.log("updatedTransaction:", updatedTransaction);
 
       const response = await updateTransaction(updatedTransaction);
 
@@ -96,22 +96,20 @@ export default function List({ monthIndex, handlePrevMonth, handleNextMonth }) {
         new Date(category.date).getMonth() === monthIndex &&
         category.userID === localStorage.getItem("userID")
     );
-
-    // Generate transaction components for each filtered label object
-    Transactions = filteredLabels.map((v, i) => (
+    Transactions = filteredLabels.map((v) => (
       <Transaction
-        key={i}
+        key={v._id}
         category={v}
-        isEditing={v._id === editingTransactionId}
+        isEditing={
+          editingTransactionId !== null &&
+          v._id === editingTransactionId.toString()
+        }
         handleDeleteTransaction={handleDeleteTransaction}
         handleEditTransaction={handleEditTransaction}
         handleSaveTransaction={handleSaveTransaction}
-        handleCancelTransaction={handleCancelTransaction} // Pass the handleCancelTransaction prop
-        newName={newName}
+        handleCancelTransaction={handleCancelTransaction}
         setNewName={setNewName}
-        newAmount={newAmount}
         setNewAmount={setNewAmount}
-        newCategory={newCategory}
         setNewCategory={setNewCategory}
         categoriesData={categoriesData}
       />

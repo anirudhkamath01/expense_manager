@@ -12,7 +12,6 @@ export default function Transaction({
   setNewCategory,
   categoriesData,
 }) {
-  // If category object is null or undefined, return null
   if (!category) return null;
 
   const handleCancel = () => {
@@ -21,7 +20,6 @@ export default function Transaction({
   };
 
   const handleSave = () => {
-    // Perform save operation or update the data
     handleSaveTransaction(category._id);
   };
 
@@ -87,7 +85,7 @@ export default function Transaction({
               onChange={(e) => setNewCategory(e.target.value)}
             >
               {categoriesData.map((cat) => (
-                <option key={cat.id} value={cat.type}>
+                <option key={cat._id} value={cat.type}>
                   {cat.type}
                 </option>
               ))}

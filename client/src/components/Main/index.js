@@ -8,7 +8,6 @@ import { useGetUserQuery } from "../../store/apiSlice.js";
 export default function Main() {
   const [monthIndex, setMonthIndex] = useState(5);
   const userID = localStorage.getItem("userID");
-  console.log("userID:", userID);
   const { data: userData, isLoading } = useGetUserQuery(userID);
 
   const handlePrevMonth = () => {
