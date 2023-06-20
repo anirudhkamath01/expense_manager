@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 // Define the base URI for the API
-const baseURI = BASE_URI;
+const baseURI = process.env.baseURI || "http://localhost:8080";
 
 // Create the API slice using createApi
 export const apiSlice = createApi({
@@ -42,7 +42,7 @@ export const apiSlice = createApi({
     updateTransaction: builder.mutation({
       query: (newTransaction) => {
         return {
-          url: `/api/transaction/`,
+          url: `/api/transaction`,
           method: "PUT",
           body: newTransaction,
         };
@@ -57,6 +57,9 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: ["transaction"],
     }),
+    getUser: builder.query({
+      query: (userId) => `/api/users/${userId}`,
+    }),
   }),
 });
 
@@ -69,4 +72,5 @@ export const {
   useAddCategoryMutation,
   useDeleteCategoryMutation,
   useUpdateTransactionMutation,
+  useGetUserQuery,
 } = apiSlice;

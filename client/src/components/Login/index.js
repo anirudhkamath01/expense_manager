@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import styles from "./styles.module.css";
 
 const Login = () => {
+  const baseURI = process.env.baseURI || "http://localhost:8080";
   const [data, setData] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
 
@@ -14,9 +15,11 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const url = "http://localhost:8080/api/auth";
+      const url = `${baseURI}/api/auth`;
       const { data: res } = await axios.post(url, data);
-      localStorage.setItem("token", res.data);
+      const { token, userID } = res.data;
+      localStorage.setItem("token", token);
+      localStorage.setItem("userID", userID);
       window.location = "/";
     } catch (error) {
       if (

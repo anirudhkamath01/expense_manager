@@ -18,7 +18,9 @@ export default function Graph({ monthIndex }) {
   } else if (isSuccess) {
     // Render the Doughnut chart with filtered data
     filteredData = data.filter(
-      (item) => new Date(item.date).getMonth() === monthIndex
+      (item) =>
+        new Date(item.date).getMonth() === monthIndex &&
+        item.userID === localStorage.getItem("userID")
     );
     // Render the Doughnut chart with filtered data
     graphData = <Doughnut {...chartData(filteredData)} />;

@@ -21,10 +21,15 @@ export default function Forms({
   const [selectedCategory, setSelectedCategory] = useState("");
   const [isRefundable, setIsRefundable] = useState(false);
   const [startDate, setStartDate] = useState(new Date());
+  const [filteredData, setFilteredData] = useState([]);
 
   useEffect(() => {
     if (categoriesData && categoriesData.length > 0) {
-      setSelectedCategory(categoriesData[0].type);
+      const filteredCategories = categoriesData.filter(
+        (category) => category.userID === localStorage.getItem("userID")
+      );
+      setFilteredData(filteredCategories);
+      setSelectedCategory(filteredCategories[0]?.type || "");
     }
   }, [categoriesData]);
 
@@ -36,6 +41,7 @@ export default function Forms({
       category: selectedCategory,
       isRefundable: Boolean(isRefundable),
       date: startDate.toISOString(),
+      userID: localStorage.getItem("userID"),
     };
 
     try {
@@ -67,7 +73,7 @@ export default function Forms({
             <input
               type="text"
               {...register("name")}
-              placeholder="Salary, Rent, Etc."
+              placeholder="Groceries, Rent, Etc."
               className="form-input"
             />
           </div>
@@ -77,8 +83,8 @@ export default function Forms({
             value={selectedCategory}
             onChange={handleCategoryChange}
           >
-            {categoriesData &&
-              categoriesData.map((category, index) => (
+            {filteredData &&
+              filteredData.map((category, index) => (
                 <option key={index} value={category.type}>
                   {category.type}
                 </option>

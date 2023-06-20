@@ -62,7 +62,11 @@ export default function Labels({ monthIndex }) {
       return;
     }
 
-    const categoryData = { type: categoryName, color: selectedColor };
+    const categoryData = {
+      type: categoryName,
+      color: selectedColor,
+      userID: localStorage.getItem("userID"),
+    };
 
     try {
       await addCategoryMutation(categoryData);
@@ -82,10 +86,16 @@ export default function Labels({ monthIndex }) {
   if (isFetching) {
     Transactions = <div>Fetching</div>;
   } else if (isSuccess) {
-    const filteredLabels = data.filter(
-      (category) => new Date(category.date).getMonth() === monthIndex
+    const filteredCategories = categoriesData.filter(
+      (category) => category.userID === localStorage.getItem("userID")
     );
-    Transactions = getLabels(filteredLabels, categoriesData).map((v, i) => (
+    const filteredLabels = data.filter(
+      (category) =>
+        new Date(category.date).getMonth() === monthIndex &&
+        category.userID === localStorage.getItem("userID")
+    );
+
+    Transactions = getLabels(filteredLabels, filteredCategories).map((v, i) => (
       <LabelComponent
         key={i}
         data={v}

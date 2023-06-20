@@ -92,7 +92,9 @@ export default function List({ monthIndex, handlePrevMonth, handleNextMonth }) {
     Transactions = <div>Fetching</div>;
   } else if (isSuccess) {
     const filteredLabels = labels.filter(
-      (category) => new Date(category.date).getMonth() === monthIndex
+      (category) =>
+        new Date(category.date).getMonth() === monthIndex &&
+        category.userID === localStorage.getItem("userID")
     );
 
     // Generate transaction components for each filtered label object

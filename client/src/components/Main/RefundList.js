@@ -9,7 +9,9 @@ export default function RefundList() {
     Transactions = <div>Fetching</div>;
   } else if (isSuccess) {
     const filteredLabels = labels.filter(
-      (category) => category.isRefundable === true
+      (category) =>
+        category.isRefundable === true &&
+        category.userID === localStorage.getItem("userID")
     );
     // Generate transaction components for each filtered label object
     Transactions = filteredLabels.map((v, i) => (

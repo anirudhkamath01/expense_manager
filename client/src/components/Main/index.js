@@ -3,9 +3,13 @@ import Forms from "./Forms.js";
 import RefundList from "./RefundList.js";
 
 import { useState } from "react";
+import { useGetUserQuery } from "../../store/apiSlice.js";
 
 export default function Main() {
   const [monthIndex, setMonthIndex] = useState(5);
+  const userID = localStorage.getItem("userID");
+  console.log("userID:", userID);
+  const { data: userData, isLoading } = useGetUserQuery(userID);
 
   const handlePrevMonth = () => {
     if (monthIndex === 0) {
@@ -33,7 +37,13 @@ export default function Main() {
       <div className="container mx-auto text-center text-gray-800">
         <nav className="flex justify-center py-8 mb-10 bg-slate-800 text-white rounded-lg">
           <div className="flex items-center">
-            <span className="mx-auto text-4xl">Expense Tracker</span>
+            <span className="mx-auto text-4xl">
+              {isLoading ? (
+                <div>Loading...</div>
+              ) : (
+                <div>{userData && userData.firstName}'s Expense Tracker</div>
+              )}
+            </span>
           </div>
           <button
             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ml-5"

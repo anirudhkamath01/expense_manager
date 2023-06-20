@@ -6,7 +6,8 @@ router
   .route("/api/categories")
   .post(controller.createCategories)
   .get(controller.getCategories)
-  .delete(controller.deleteCategory);
+  .delete(controller.deleteCategory)
+  .put(controller.updateCategory);
 router
   .route("/api/transaction")
   .post(controller.createTransaction)

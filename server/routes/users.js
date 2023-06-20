@@ -2,6 +2,26 @@ const router = require("express").Router();
 const { User, validate } = require("../models/user");
 const bcrypt = require("bcrypt");
 
+router.get("/:userId", async (req, res) => {
+  try {
+    const userId = req.params.userId;
+
+    // Retrieve the user from the database based on the provided userId
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).send({ message: "User not found" });
+    }
+
+    // Extract the relevant information from the user object
+    const { firstName, lastName, email } = user;
+
+    res.status(200).send({ firstName, lastName, email });
+  } catch (error) {
+    res.status(500).send({ message: "Internal Server Error" });
+  }
+});
+
 router.post("/", async (req, res) => {
   try {
     const { error } = validate(req.body);
