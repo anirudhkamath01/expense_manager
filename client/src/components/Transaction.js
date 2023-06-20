@@ -27,6 +27,9 @@ export default function Transaction({
     if (!isEditing) {
       handleEditTransaction(category._id);
     }
+    setNewName(category.name);
+    setNewAmount(category.amount);
+    setNewCategory(category.type);
   };
 
   return (
@@ -52,7 +55,7 @@ export default function Transaction({
             <input
               className="rounded-lg"
               type="text"
-              placeholder={category.name ?? ""}
+              defaultValue={category.name ?? ""}
               onChange={(e) => setNewName(e.target.value)}
             />
           ) : (
@@ -63,7 +66,7 @@ export default function Transaction({
               <input
                 className="rounded-lg text-black"
                 type="text"
-                placeholder={category.amount ?? ""}
+                defaultValue={category.amount ?? ""}
                 onChange={(e) => {
                   const value = e.target.value.replace(/[^0-9.]/g, "");
                   e.target.value = value;
