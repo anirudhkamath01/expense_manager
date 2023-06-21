@@ -23,7 +23,7 @@ Chart.register(
 export default function Graph({ monthIndex }) {
   // Fetching data using a custom hook
   const { data, isFetching, isSuccess, isError } = useGetLabelsQuery();
-  
+
   let graphData;
   let filteredData;
   let barData;
@@ -61,7 +61,7 @@ export default function Graph({ monthIndex }) {
 
         <div className="flex flex-col py-10 gap-4">
           {isSuccess && <Labels monthIndex={monthIndex} />}
-          <h1>Expense Summary</h1>
+          {isSuccess && <h1>Expense Summary</h1>}
           {barData && <Bar data={barData} />} {/* Render the Bar chart */}
         </div>
       </div>
