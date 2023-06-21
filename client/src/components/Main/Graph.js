@@ -23,6 +23,7 @@ Chart.register(
 export default function Graph({ monthIndex }) {
   // Fetching data using a custom hook
   const { data, isFetching, isSuccess, isError } = useGetLabelsQuery();
+  
   let graphData;
   let filteredData;
   let barData;
