@@ -119,6 +119,7 @@ export function barChart(transactions) {
           "rgb(201, 203, 207)",
         ],
         borderWidth: 1,
+        hoverBackgroundColor: "rgba(255, 99, 132, 0.4)",
       },
     ],
   };
