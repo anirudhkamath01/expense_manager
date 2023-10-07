@@ -98,12 +98,12 @@ async function createTransaction(req, res) {
 }
 
 async function updateTransaction(req, res) {
-  const { _id, amount, name, category } = req.body;
+  const { _id, amount, name, category, isRefundable } = req.body;
 
   try {
     const updatedTransaction = await Transaction.findByIdAndUpdate(
       { _id },
-      { amount, name, type: category },
+      { amount, name, type: category, isRefundable },
       { new: true }
     );
 
