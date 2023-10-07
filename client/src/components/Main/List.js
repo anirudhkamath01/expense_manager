@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "boxicons";
 import {
   useDeleteTransactionMutation,
@@ -26,6 +26,8 @@ export default function List({ monthIndex, handlePrevMonth, handleNextMonth }) {
   const [newAmount, setNewAmount] = useState("");
   const [newCategory, setNewCategory] = useState("");
   const { data: categoriesData } = useGetCategoriesQuery();
+  const [selectedCategory, setSelectedCategory] = useState("All"); // Set to "All" initially
+  const [userCategories, setUserCategories] = useState([]);
 
   var month = [
     "January",
@@ -41,6 +43,15 @@ export default function List({ monthIndex, handlePrevMonth, handleNextMonth }) {
     "November",
     "December",
   ];
+
+  useEffect(() => {
+    if (categoriesData && categoriesData.length > 0) {
+      const filteredCategories = categoriesData.filter(
+        (category) => category.userID === localStorage.getItem("userID")
+      );
+      setUserCategories(filteredCategories);
+    }
+  }, [categoriesData]);
 
   const handleDeleteTransaction = async (transactionId) => {
     await deleteTransaction({ _id: transactionId });
@@ -65,8 +76,6 @@ export default function List({ monthIndex, handlePrevMonth, handleNextMonth }) {
         category: newCategory,
       };
 
-      console.log("updatedTransaction:", updatedTransaction);
-
       const response = await updateTransaction(updatedTransaction);
 
       if (response.error) {
@@ -82,8 +91,8 @@ export default function List({ monthIndex, handlePrevMonth, handleNextMonth }) {
     setEditingTransactionId(null);
   };
 
-  const handleCancelTransaction = () => {
-    setEditingTransactionId(null);
+  const handleCategoryChange = (e) => {
+    setSelectedCategory(e.target.value); // Set the selected category
   };
 
   let Transactions;
@@ -94,8 +103,10 @@ export default function List({ monthIndex, handlePrevMonth, handleNextMonth }) {
     const filteredLabels = labels.filter(
       (category) =>
         new Date(category.date).getMonth() === monthIndex &&
-        category.userID === localStorage.getItem("userID")
+        category.userID === localStorage.getItem("userID") &&
+        (selectedCategory === "All" || category.type === selectedCategory) // Consider "All" option
     );
+
     Transactions = filteredLabels.map((v) => (
       <Transaction
         key={v._id}
@@ -107,7 +118,6 @@ export default function List({ monthIndex, handlePrevMonth, handleNextMonth }) {
         handleDeleteTransaction={handleDeleteTransaction}
         handleEditTransaction={handleEditTransaction}
         handleSaveTransaction={handleSaveTransaction}
-        handleCancelTransaction={handleCancelTransaction}
         setNewName={setNewName}
         setNewAmount={setNewAmount}
         setNewCategory={setNewCategory}
@@ -122,6 +132,19 @@ export default function List({ monthIndex, handlePrevMonth, handleNextMonth }) {
 
   return (
     <div className="flex flex-col py-6 gap-3">
+      <select
+        className="form-input"
+        value={selectedCategory}
+        onChange={handleCategoryChange}
+      >
+        <option value="All">All</option> {/* Add "All" option */}
+        {userCategories &&
+          userCategories.map((category, index) => (
+            <option key={index} value={category.type}>
+              {category.type}
+            </option>
+          ))}
+      </select>
       <div className="flex font-bold items-center justify-between">
         <ChevronLeftIcon
           fontSize="large"

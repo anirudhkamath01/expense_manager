@@ -6,7 +6,7 @@ import { useState } from "react";
 import { useGetUserQuery } from "../../store/apiSlice.js";
 
 export default function Main() {
-  const [monthIndex, setMonthIndex] = useState(5);
+  const [monthIndex, setMonthIndex] = useState(new Date().getMonth());
   const userID = localStorage.getItem("userID");
   const { data: userData, isLoading } = useGetUserQuery(userID);
 
