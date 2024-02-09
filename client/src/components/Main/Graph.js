@@ -25,21 +25,26 @@ export default function Graph({ monthIndex }) {
   const { data, isFetching, isSuccess, isError } = useGetLabelsQuery();
 
   let graphData;
-  let filteredData;
+  let filteredDataByUserMonth;
+  let filteredDataByUser;
   let barData;
 
   if (isFetching) {
     graphData = <div>Fetching</div>;
   } else if (isSuccess) {
     // Render the Doughnut chart with filtered data
-    filteredData = data.filter(
+    filteredDataByUserMonth = data.filter(
       (item) =>
         new Date(item.date).getMonth() === monthIndex &&
         item.userID === localStorage.getItem("userID")
     );
+    filteredDataByUser = data.filter(
+      (item) => item.userID === localStorage.getItem("userID")
+    );
+    console.log("filteredData", filteredDataByUserMonth);
     // Render the Doughnut chart with filtered data
-    graphData = <Doughnut {...chartData(filteredData)} />;
-    barData = barChart(data); // Get the bar chart data
+    graphData = <Doughnut {...chartData(filteredDataByUserMonth)} />;
+    barData = barChart(filteredDataByUser); // Get the bar chart data
   } else if (isError) {
     graphData = <div>Error</div>;
   }
@@ -53,7 +58,7 @@ export default function Graph({ monthIndex }) {
             <h3 className="mb-4 font-bold title">
               Total
               <span className="block text-3xl text-emerald-400">
-                ${getTotal(filteredData) ?? 0}
+                ${getTotal(filteredDataByUserMonth) ?? 0}
               </span>
             </h3>
           )}
